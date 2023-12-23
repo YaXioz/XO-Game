@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XOXO Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .game {
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            grid-template-rows: repeat(3, 100px);
+            gap: 10px;
+        }
+        .box {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100px;
+            height: 100px;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            border: 1px solid #000;
+            transition: all 0.3s;
+        }
+        .box:hover {
+            background-color: #ccc;
+        }
+        .win {
+            background-color: #6c757d;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div class="game"></div>
+    <script>
+        const game = document.querySelector('.game');
+        let boxes = [];
+        let player = 'X';
+        let wins = [
+            [0, 1, 2],
+            [3, 4, 5],
+            [6, 7, 8],
+            [0, 3, 6],
+            [1, 4, 7],
+            [2, 5, 8],
+            [0, 4, 8],
+            [2, 4, 6]
+        ];
+
+        const restart = () => {
+            boxes = [];
+            game.innerHTML = '';
+            for (let i = 0; i < 9; i++) {
+                const box = document.createElement('div');
+                box.classList.add('box');
+                box.setAttribute('onclick', 'turn(this)');
+                game.appendChild(box);
+                boxes.push(box);
+            }
+            player = 'X';
+        }
+
+        const turn = (box) => {
+            if (!box.innerText) {
+                box.innerText = player;
+                player = player === 'X' ? 'O' : 'X';
+            }
+            checkWin();
+        }
+
+        const checkWin = () => {
+            let winner = false;
+            for (let win of wins) {
+                let a = boxes[win[0]].innerText;
+                let b = boxes[win[1]].innerText;
+                let c = boxes[win[2]].innerText;
+                if (a && b && c && a === b && b === c) {
+                    boxes[win[0]].classList.add('win');
+                    boxes[win[1]].classList.add('win');
+                    boxes[win[2]].classList.add('win');
+                    winner = true;
+                    break;
+                }
+            }
+            if (winner) {
+                alert(`Player ${player} wins!`);
+                restart();
+            } else if (!boxes.some(box => !box.innerText)) {
+                alert('It\'s a tie!');
+                restart();
+            }
+        }
+
+        restart();
+    </script>
+</body>
+</html>
